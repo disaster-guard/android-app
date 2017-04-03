@@ -1,0 +1,50 @@
+package com.shltr.darrieng.shltr_android.Fragment;
+
+
+import android.content.Context;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
+
+/**
+ * Fragment containing pages of fragment.
+ */
+public class PagerAdapterFragment extends FragmentStatePagerAdapter {
+
+    /**
+     * Reference to Android context.
+     */
+    Context context;
+
+    /**
+     * Public constructor.
+     *
+     * @param fm Reference to fragment manager.
+     * @param context Reference to Android Context.
+     */
+    public PagerAdapterFragment(FragmentManager fm, Context context) {
+        super(fm);
+        this.context = context;
+    }
+
+    @Override
+    public int getCount() {
+        return 3;
+    }
+
+    @Override
+    public Fragment getItem(int position) {
+        switch (position) {
+            case 0:
+                return IdentiferFragment.newInstance(position + 1);
+            case 1:
+                return FlareFragment.newInstance(position + 1);
+            case 2:
+                return NearbyFragment.newInstance(position + 1);
+            default:
+                return FlareFragment.newInstance(position + 1);
+        }
+    }
+
+    
+}
