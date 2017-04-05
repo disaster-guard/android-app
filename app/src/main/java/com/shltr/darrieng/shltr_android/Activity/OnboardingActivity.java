@@ -123,6 +123,7 @@ public class OnboardingActivity extends AppCompatActivity implements Callback<Us
         goButton.setOnClickListener(v -> {
             if (validateInput()) {
                 // send to server, partay
+                startActivity(new Intent(this, RescueeActivity.class));
                 startNetworking();
             } else {
                 // no-op
@@ -228,7 +229,7 @@ public class OnboardingActivity extends AppCompatActivity implements Callback<Us
 
     @Override
     public void onFailure(Call<UserToken> call, Throwable t) {
-
+        Toast.makeText(this, call.request().toString(), Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -275,7 +276,7 @@ public class OnboardingActivity extends AppCompatActivity implements Callback<Us
 
                 @Override
                 public void onFailure(Call<Void> call, Throwable t) {
-
+                    Toast.makeText(OnboardingActivity.this, call.request().toString(), Toast.LENGTH_SHORT).show();
                 }
             });
 

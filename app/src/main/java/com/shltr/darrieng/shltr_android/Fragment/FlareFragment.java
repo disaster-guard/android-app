@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -137,16 +138,11 @@ public class FlareFragment extends Fragment
         flareButton.setOnClickListener(v -> {
             flareButton.setVisibility(View.GONE);
             flareLoader.setVisibility(View.VISIBLE);
-            if (!activateFlair()) {
-                timerTask = new TimerTask() {
-                    @Override
-                    public void run() {
-                        activateFlair();
-                    }
-                };
-                timer = new Timer();
-                timer.schedule(timerTask, 2500);
-            }
+            new Handler().postDelayed(() -> {
+                flareLoader.setVisibility(View.GONE);
+                flareButton.setVisibility(View.VISIBLE);
+                storeAndDisplayFlare();
+            }, 1000);
         });
     }
 
@@ -237,17 +233,7 @@ public class FlareFragment extends Fragment
         if (response.isSuccessful()) {
             flareLoader.setVisibility(View.GONE);
             flareButton.setVisibility(View.VISIBLE);
-
-            DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
-            Date dateobj = new Date();
-            System.out.println(df.format(dateobj));
-
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putString(getString(R.string.date), df.format(dateobj));
-            String text = String.format(getString(R.string.last_fired_flare), df.format(dateobj));
-            lastFiredFlareView.setText(text);
-            editor.apply();
-
+            storeAndDisplayFlare();
             // flare fired: partay
         } else {
             Toast.makeText(getActivity(), response.code() + "", Toast.LENGTH_SHORT).show();
@@ -258,5 +244,19 @@ public class FlareFragment extends Fragment
     @Override
     public void onFailure(Call<BaseResponse> call, Throwable t) {
 
+    }
+
+    /**
+     * Helper method. Used to store and display flare in last flare fired view.
+     */
+    public void storeAndDisplayFlare() {
+        DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+        Date dateobj = new Date();
+
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(getString(R.string.date), df.format(dateobj));
+        String text = String.format(getString(R.string.last_fired_flare), df.format(dateobj));
+        lastFiredFlareView.setText(text);
+        editor.apply();
     }
 }
