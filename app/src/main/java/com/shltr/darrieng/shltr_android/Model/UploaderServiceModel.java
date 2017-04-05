@@ -14,8 +14,6 @@ import retrofit2.http.PartMap;
  * UNUSED: Model used for uploading images to the server.
  */
 public interface UploaderServiceModel {
-    String ENDPOINT = "http://hack.symerit.com/";
-
     @Multipart
     @POST("api/uploadProfilePicture")
     Call<ResponseBody> postImage(@Header("Authorization") String header, @PartMap Map<String, RequestBody> params);

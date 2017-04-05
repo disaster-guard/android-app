@@ -43,6 +43,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import static android.view.View.GONE;
+import static com.shltr.darrieng.shltr_android.Activity.OnboardingActivity.BASE_URL;
 import static com.shltr.darrieng.shltr_android.Fragment.FlareFragment.ARG_PAGE;
 
 /**
@@ -151,7 +152,7 @@ public class NearbyFragment extends Fragment
         Gson gson = new Gson();
         // make call to API with email: network to pull down Name and profile
         Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl(UserRetrievalModel.ENDPOINT)
+            .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build();
 

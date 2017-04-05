@@ -11,8 +11,6 @@ import retrofit2.http.Query;
  * Model used for retrieving user Id.
   */
 public interface IdModel {
-    String ENDPOINT = "http://hack.symerit.com/";
-
     @GET("api/getUserId")
     Call<UserId> retrieveId(@Header("Authorization") String header, @Query("email") String email);
 }

@@ -7,8 +7,10 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
 
+import static com.shltr.darrieng.shltr_android.Activity.OnboardingActivity.BASE_URL;
+
 public interface PwModel {
-    String LOGIN_ENDPOINT = "http://hack.symerit.com/oauth/";
+    String LOGIN_ENDPOINT = BASE_URL + "oauth/";
 
     @POST("token")
     Call<UserToken> loginUser(@Body LoginPojo user);

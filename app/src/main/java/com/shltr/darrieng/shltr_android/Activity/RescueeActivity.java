@@ -26,6 +26,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static com.shltr.darrieng.shltr_android.Activity.OnboardingActivity.BASE_URL;
+
 /**
  * Parent activity containing all rescuer/rescuing features.
  */
@@ -72,7 +74,7 @@ public class RescueeActivity extends AppCompatActivity implements Callback<UserI
             userEmail = getIntent().getExtras().getString(getString(R.string.email));
             Gson gson = new GsonBuilder().create();
             Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(IdModel.ENDPOINT)
+                .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 

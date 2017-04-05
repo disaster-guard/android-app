@@ -26,7 +26,6 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.shltr.darrieng.shltr_android.Model.ProductionModel;
-import com.shltr.darrieng.shltr_android.Model.UploaderServiceModel;
 import com.shltr.darrieng.shltr_android.Pojo.AgeModel;
 import com.shltr.darrieng.shltr_android.Pojo.CompleteIdentificationModel;
 import com.shltr.darrieng.shltr_android.Pojo.Match;
@@ -48,6 +47,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
+import static com.shltr.darrieng.shltr_android.Activity.OnboardingActivity.BASE_URL;
 import static com.shltr.darrieng.shltr_android.Fragment.FlareFragment.ARG_PAGE;
 
 /**
@@ -153,7 +153,7 @@ public class IdentiferFragment extends Fragment implements Callback<CompleteIden
                 String uploadId = UUID.randomUUID().toString();
 
                 //Creating a multi part request
-                new MultipartUploadRequest(getActivity(), uploadId, UploaderServiceModel.ENDPOINT + "api/uploadProductionPicture")
+                new MultipartUploadRequest(getActivity(), uploadId, BASE_URL + "api/uploadProductionPicture")
                     .addFileToUpload(filePath, "image") //Adding file
                     .addParameter("user_id", preferences.getInt(getString(R.string.id), -1) + "")
                     .addHeader("Authorization", "Bearer " + preferences.getString(getString(R.string.token), null))
@@ -166,7 +166,7 @@ public class IdentiferFragment extends Fragment implements Callback<CompleteIden
                 handler.postDelayed(() -> {
                     Gson gson = new GsonBuilder().create();
                     Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(ProductionModel.ENDPOINT)
+                        .baseUrl(BASE_URL)
                         .addConverterFactory(GsonConverterFactory.create(gson))
                         .build();
 

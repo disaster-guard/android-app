@@ -11,8 +11,6 @@ import retrofit2.http.Query;
  * Model used for getting more information about users when they are nearby.
  */
 public interface UserRetrievalModel {
-    String ENDPOINT = "http://hack.symerit.com/";
-
     @GET("api/nearByProfile")
     Call<UserPojo> retrieveId(@Header("Authorization") String header, @Query("email") String email);
 }

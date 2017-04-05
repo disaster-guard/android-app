@@ -8,8 +8,6 @@ import retrofit2.http.Header;
 import retrofit2.http.Query;
 
 public interface ProductionModel {
-    String ENDPOINT = "http://hack.symerit.com/";
-
     @GET("api/getProductionJson")
     Call<CompleteIdentificationModel> pilferData(
         @Header("Authorization") String header, @Query("user_id") int user_id);

@@ -12,8 +12,6 @@ import retrofit2.http.POST;
  * Model used to send flare to server.
  */
 public interface FlareModel {
-    String ENDPOINT = "http://hack.symerit.com/";
-
     @POST("api/flare")
     Call<BaseResponse> createUser(@Header("Authorization") String header, @Body FlarePojo flare);
 }

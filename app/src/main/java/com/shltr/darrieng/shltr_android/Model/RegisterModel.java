@@ -10,8 +10,6 @@ import retrofit2.http.POST;
  * Model used for user registration.
  */
 public interface RegisterModel {
-    String LOGIN_ENDPOINT = "http://hack.symerit.com/";
-
     @POST("register")
     Call<Void> createUser(@Body RegisterPojo user);
 }

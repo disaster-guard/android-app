@@ -43,6 +43,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static com.shltr.darrieng.shltr_android.Activity.OnboardingActivity.BASE_URL;
+
 /**
  * Fragment containing ability for users to fire flares.
  */
@@ -161,7 +163,7 @@ public class FlareFragment extends Fragment
         }
         Gson gson = new GsonBuilder().create();
         Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl(FlareModel.ENDPOINT)
+            .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build();
 

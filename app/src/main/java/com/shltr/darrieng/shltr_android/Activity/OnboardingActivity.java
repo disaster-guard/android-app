@@ -39,6 +39,8 @@ import static com.shltr.darrieng.shltr_android.R.string.email;
  */
 public class OnboardingActivity extends AppCompatActivity implements Callback<UserToken> {
 
+    public static final String BASE_URL = "http://54.242.95.14/";
+
     /**
      * Button used start sign up process.
      */
@@ -252,7 +254,7 @@ public class OnboardingActivity extends AppCompatActivity implements Callback<Us
         } else {
             Call<Void> call;
             Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(RegisterModel.LOGIN_ENDPOINT)
+                .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson)).build();
 
             RegisterModel rm = retrofit.create(RegisterModel.class);
