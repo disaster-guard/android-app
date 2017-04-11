@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -20,11 +21,11 @@ import com.shltr.darrieng.shltr_android.Model.PwModel;
 import com.shltr.darrieng.shltr_android.Model.RegisterModel;
 import com.shltr.darrieng.shltr_android.Pojo.LoginPojo;
 import com.shltr.darrieng.shltr_android.Pojo.RegisterPojo;
-import com.shltr.darrieng.shltr_android.Pojo.UserToken;
 import com.shltr.darrieng.shltr_android.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -32,14 +33,13 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import static android.view.View.GONE;
-import static com.shltr.darrieng.shltr_android.R.string.email;
 
 /**
  * Activity for user onboarding, login, and sign up.
  */
-public class OnboardingActivity extends AppCompatActivity implements Callback<UserToken> {
+public class OnboardingActivity extends AppCompatActivity implements Callback<ResponseBody> {
 
-    public static final String BASE_URL = "http://54.242.95.14/";
+    public static final String BASE_URL = "http://52.91.137.219/";
 
     /**
      * Button used start sign up process.
@@ -95,6 +95,9 @@ public class OnboardingActivity extends AppCompatActivity implements Callback<Us
     @BindView(R.id.name_view)
     TextInputEditText nameView;
 
+    @BindView(R.id.debugView)
+    TextView debugView;
+
     /**
      * Determine if user is signing up.
      */
@@ -130,6 +133,10 @@ public class OnboardingActivity extends AppCompatActivity implements Callback<Us
                 // no-op
             }
         });
+
+        nameView.setText("Darrien Glasser");
+        enterInputView.setText("darrienglasser@outlook.com");
+        enterPwView.setText("password");
     }
 
     /**
@@ -215,22 +222,29 @@ public class OnboardingActivity extends AppCompatActivity implements Callback<Us
     }
 
     @Override
-    public void onResponse(Call<UserToken> call, Response<UserToken> response) {
+    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
         if (response.isSuccessful()) {
-            passData(response.body().getAccess_token());
-            Intent intent = new Intent(this, RescueeActivity.class);
-            intent.putExtra(getString(email), enterInputView.getText().toString());
-            editor.putString(getString(R.string.email), enterInputView.getText().toString());
-            editor.apply();
-            startActivity(intent);
+//            passData(response.body().getAccess_token());
+//            Intent intent = new Intent(this, RescueeActivity.class);
+//            intent.putExtra(getString(email), enterInputView.getText().toString());
+//            editor.putString(getString(R.string.email), enterInputView.getText().toString());
+//            editor.apply();
+//            startActivity(intent);
+            String msg;
+            try {
+                msg = response.body().string();
+            } catch (Exception e) {
+                msg = "no body";
+            }
+            debugView.setText(msg);
         } else {
-            Toast.makeText(this, "Failed to login " + response.code() + " " + response.message(), Toast.LENGTH_SHORT).show();
+            debugView.setText("ULTRA FAILURE: " + getMsg(response));
         }
     }
 
     @Override
-    public void onFailure(Call<UserToken> call, Throwable t) {
-
+    public void onFailure(Call<ResponseBody> call, Throwable t) {
+        debugView.setText("Retrofit onFailure: " + t.getMessage());
     }
 
     /**
@@ -240,13 +254,13 @@ public class OnboardingActivity extends AppCompatActivity implements Callback<Us
         Gson gson = new GsonBuilder().create();
         if (!isSigningUp) {
             Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(PwModel.LOGIN_ENDPOINT)
+                .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
             PwModel passwordModel = retrofit.create(PwModel.class);
 
-            Call<UserToken> call;
+            Call<ResponseBody> call;
             LoginPojo pwpj =
                 new LoginPojo(enterInputView.getText().toString(), enterPwView.getText().toString());
             call = passwordModel.loginUser(pwpj);
@@ -277,11 +291,27 @@ public class OnboardingActivity extends AppCompatActivity implements Callback<Us
 
                 @Override
                 public void onFailure(Call<Void> call, Throwable t) {
-
+                    Toast.makeText(OnboardingActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(OnboardingActivity.this, "cry", Toast.LENGTH_LONG).show();
                 }
             });
 
         }
+    }
+
+    /**
+     * Helper method: Gets response and returns body in a string.
+     * @param response Response
+     * @return Body of response
+     */
+    private String getMsg(Response<ResponseBody> response) {
+        String body;
+        try {
+            body = response.body().string();
+        } catch (Exception e) {
+            body = "something failed";
+        }
+        return body;
     }
 }
 

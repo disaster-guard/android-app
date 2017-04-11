@@ -66,4 +66,16 @@ public class LoginPojo {
     public void setScope(String scope) {
         this.scope = scope;
     }
+
+    @Override
+    public String toString() {
+        return "LoginPojo{" +
+            "grant_type='" + grant_type + '\'' +
+            ", client_id='" + client_id + '\'' +
+            ", client_secret='" + client_secret + '\'' +
+            ", username='" + username + '\'' +
+            ", password='" + password + '\'' +
+            ", scope='" + scope + '\'' +
+            '}';
+    }
 }
