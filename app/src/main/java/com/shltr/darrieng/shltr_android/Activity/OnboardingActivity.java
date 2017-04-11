@@ -240,7 +240,7 @@ public class OnboardingActivity extends AppCompatActivity implements Callback<Us
         Gson gson = new GsonBuilder().create();
         if (!isSigningUp) {
             Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(PwModel.LOGIN_ENDPOINT)
+                .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
