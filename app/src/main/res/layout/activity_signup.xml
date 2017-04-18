@@ -80,7 +80,7 @@
                     android:layout_height="wrap_content"
                     android:drawablePadding="16dp"
                     android:drawableStart="@drawable/ic_face_white_48px"
-                    android:hint="@string/name"
+                    android:hint="@string/email"
                     android:maxLines="1"
                     android:textColor="#ffffff"/>
 

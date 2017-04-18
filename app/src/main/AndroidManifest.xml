@@ -2,12 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.shltr.darrieng.shltr_android">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-feature android:name="android.hardware.camera" android:required="true" />
+    <uses-permission android:email="android.permission.INTERNET"/>
+    <uses-permission android:email="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:email="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:email="android.permission.RECORD_AUDIO" />
+    <uses-permission android:email="android.permission.CAMERA" />
+    <uses-feature android:email="android.hardware.camera" android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -17,32 +17,32 @@
         android:theme="@style/AppTheme">
 
         <provider
-            android:name="android.support.v4.content.FileProvider"
+            android:email="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:email="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths"/>
         </provider>
 
-        <activity android:name=".Activity.OnboardingActivity">
+        <activity android:email=".Activity.OnboardingActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:email="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:email="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".Activity.RescueeActivity" android:configChanges="orientation|screenSize">
+        <activity android:email=".Activity.RescueeActivity" android:configChanges="orientation|screenSize">
         </activity>
         <activity
-            android:name="com.afollestad.materialcamera.CaptureActivity"
+            android:email="com.afollestad.materialcamera.CaptureActivity"
             android:theme="@style/MaterialCamera.CaptureActivity" />
         <activity
-            android:name="com.afollestad.materialcamera.CaptureActivity2"
+            android:email="com.afollestad.materialcamera.CaptureActivity2"
             android:theme="@style/MaterialCamera.CaptureActivity" />
         <meta-data
-            android:name="com.google.android.nearby.messages.API_KEY"
+            android:email="com.google.android.nearby.messages.API_KEY"
             android:value="AIzaSyAor8CjSJCWnSUhwXn9VcGFe1dIeaI0Wd0"/>
     </application>
 

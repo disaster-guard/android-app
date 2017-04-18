@@ -7,15 +7,15 @@ public class LoginPojo {
     String grant_type = "password";
     String client_id = "4";
     String client_secret = "p7lrAtXIa15549Qq5a8gGNoOzuVwYRQfOYTcMWyh";
-    String username;
+    String email;
     String password;
     String scope = "*";
 
     public LoginPojo(
-        String username,
+        String email,
         String password) {
 
-        this.username = username;
+        this.email = email;
         this.password = password;
     }
 
@@ -43,12 +43,12 @@ public class LoginPojo {
         this.client_secret = client_secret;
     }
 
-    public String getUsername() {
-        return username;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {

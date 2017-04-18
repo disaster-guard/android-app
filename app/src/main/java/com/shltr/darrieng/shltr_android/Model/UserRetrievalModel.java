@@ -11,6 +11,6 @@ import retrofit2.http.Query;
  * Model used for getting more information about users when they are nearby.
  */
 public interface UserRetrievalModel {
-    @GET("api/nearByProfile")
+    @GET("api/nearbyProfile")
     Call<UserPojo> retrieveId(@Header("Authorization") String header, @Query("email") String email);
 }

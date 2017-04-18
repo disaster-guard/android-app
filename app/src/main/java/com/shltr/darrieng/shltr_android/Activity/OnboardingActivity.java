@@ -16,8 +16,9 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.shltr.darrieng.shltr_android.Model.PwModel;
+import com.shltr.darrieng.shltr_android.Model.LoginModel;
 import com.shltr.darrieng.shltr_android.Model.RegisterModel;
+import com.shltr.darrieng.shltr_android.Pojo.BaseResponse;
 import com.shltr.darrieng.shltr_android.Pojo.LoginPojo;
 import com.shltr.darrieng.shltr_android.Pojo.RegisterPojo;
 import com.shltr.darrieng.shltr_android.Pojo.UserToken;
@@ -32,14 +33,13 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import static android.view.View.GONE;
-import static com.shltr.darrieng.shltr_android.R.string.email;
 
 /**
  * Activity for user onboarding, login, and sign up.
  */
 public class OnboardingActivity extends AppCompatActivity implements Callback<UserToken> {
 
-    public static final String BASE_URL = "http://54.242.95.14/";
+    public static final String BASE_URL = "http://52.55.141.18";
 
     /**
      * Button used start sign up process.
@@ -130,6 +130,11 @@ public class OnboardingActivity extends AppCompatActivity implements Callback<Us
                 // no-op
             }
         });
+
+        enterInputView.setText("dave@davemachado.com");
+        enterPwView.setText("password");
+        nameView.setText("Darrien Glasser");
+
     }
 
     /**
@@ -217,9 +222,10 @@ public class OnboardingActivity extends AppCompatActivity implements Callback<Us
     @Override
     public void onResponse(Call<UserToken> call, Response<UserToken> response) {
         if (response.isSuccessful()) {
+            Toast.makeText(this, "made it", Toast.LENGTH_SHORT).show();
             passData(response.body().getAccess_token());
             Intent intent = new Intent(this, RescueeActivity.class);
-            intent.putExtra(getString(email), enterInputView.getText().toString());
+            intent.putExtra(getString(R.string.email), enterInputView.getText().toString());
             editor.putString(getString(R.string.email), enterInputView.getText().toString());
             editor.apply();
             startActivity(intent);
@@ -230,7 +236,7 @@ public class OnboardingActivity extends AppCompatActivity implements Callback<Us
 
     @Override
     public void onFailure(Call<UserToken> call, Throwable t) {
-
+        Toast.makeText(this, "login failure: " + t.getMessage(), Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -244,7 +250,7 @@ public class OnboardingActivity extends AppCompatActivity implements Callback<Us
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
-            PwModel passwordModel = retrofit.create(PwModel.class);
+            LoginModel passwordModel = retrofit.create(LoginModel.class);
 
             Call<UserToken> call;
             LoginPojo pwpj =
@@ -252,7 +258,7 @@ public class OnboardingActivity extends AppCompatActivity implements Callback<Us
             call = passwordModel.loginUser(pwpj);
             call.enqueue(this);
         } else {
-            Call<Void> call;
+            Call<BaseResponse> call;
             Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson)).build();
@@ -264,20 +270,26 @@ public class OnboardingActivity extends AppCompatActivity implements Callback<Us
                     enterInputView.getText().toString(),
                     enterPwView.getText().toString()));
 
-            call.enqueue(new Callback<Void>() {
+            call.enqueue(new Callback<BaseResponse>() {
                 @Override
-                public void onResponse(Call<Void> call, Response<Void> response) {
+                public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
                     if (response.isSuccessful()) {
                         Toast.makeText(OnboardingActivity.this, "Successful register, please log in", Toast.LENGTH_SHORT).show();
                         setUpForInput(false);
                     } else {
-                        Toast.makeText(OnboardingActivity.this, "Network error, please try again", Toast.LENGTH_SHORT).show();
+                        String msg = "¢∞§¢£";
+                        try {
+                            msg = response.errorBody().string();
+                        } catch (Exception e) {
+
+                        }
+                        Toast.makeText(OnboardingActivity.this, response.code() + " " + msg, Toast.LENGTH_LONG).show();
                     }
                 }
 
                 @Override
-                public void onFailure(Call<Void> call, Throwable t) {
-
+                public void onFailure(Call<BaseResponse> call, Throwable t) {
+                    Toast.makeText(OnboardingActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
 

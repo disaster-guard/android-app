@@ -9,7 +9,7 @@ import java.nio.charset.Charset;
  * Used to prepare the payload for a
  * {@link com.google.android.gms.nearby.messages.Message Nearby Message}. Adds a unique id
  * to the Message payload, which helps Nearby distinguish between multiple devices with
- * the same model name.
+ * the same model email.
  */
 public class DeviceMessage {
     private static final Gson gson = new Gson();
