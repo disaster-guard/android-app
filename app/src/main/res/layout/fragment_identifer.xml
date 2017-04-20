@@ -13,12 +13,16 @@
                android:src="@mipmap/placeholder"/>
 
     <android.support.v7.widget.CardView android:layout_width="match_parent"
-                                        android:layout_height="wrap_content">
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginStart="16dp"
+                                        android:layout_marginEnd="16dp">
 
-        <TextView android:id="@+id/agglomerate_text_view" android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/agglomerate_text_view"
+                  android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:layout_gravity="center"
-                  android:padding="16dp"
+                  android:layout_margin="16dp"
                   android:textSize="16sp"
                   android:textStyle="bold"/>
 

@@ -79,6 +79,11 @@ public class FlareFragment extends Fragment
     private Timer timer;
 
     /**
+     * Number of times to retry firing a flare.
+     */
+    private int retry = 0;
+
+    /**
      * Button used to fire a flare.
      */
     @BindView(R.id.flare_button)
@@ -139,15 +144,21 @@ public class FlareFragment extends Fragment
         flareButton.setOnClickListener(v -> {
             flareButton.setVisibility(View.GONE);
             flareLoader.setVisibility(View.VISIBLE);
-            if (!activateFlair()) {
+            if (!activateFlair() && retry < 3) {
                 timerTask = new TimerTask() {
                     @Override
                     public void run() {
                         activateFlair();
+                        ++retry;
                     }
                 };
                 timer = new Timer();
                 timer.schedule(timerTask, 2500);
+            }
+            if (retry == 3) {
+                retry = 0;
+                flareButton.setVisibility(View.GONE);
+                flareLoader.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -171,7 +182,7 @@ public class FlareFragment extends Fragment
 
         Call<BaseResponse> call;
 
-        call = fm.createUser("Bearer " + preferences.getString(getString(R.string.token), null),
+        call = fm.createUser(preferences.getString(getString(R.string.token), null),
             new FlarePojo(location.getLongitude(),
                 location.getLatitude(),
                 preferences.getInt(
