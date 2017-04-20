@@ -247,7 +247,6 @@ public class FlareFragment extends Fragment
 
     @Override
     public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
-        Toast.makeText(getActivity(), "got a response", Toast.LENGTH_SHORT).show();
         if (response.isSuccessful()) {
             flareLoader.setVisibility(View.GONE);
             flareButton.setVisibility(View.VISIBLE);
@@ -264,8 +263,6 @@ public class FlareFragment extends Fragment
 
             // flare fired: partay
         } else {
-            Toast.makeText(getActivity(), response.code() + "", Toast.LENGTH_SHORT).show();
-            // flare failed: cry
         }
     }
 

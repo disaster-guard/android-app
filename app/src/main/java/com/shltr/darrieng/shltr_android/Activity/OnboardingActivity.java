@@ -222,16 +222,19 @@ public class OnboardingActivity extends AppCompatActivity implements Callback<Us
     @Override
     public void onResponse(Call<UserToken> call, Response<UserToken> response) {
         if (response.isSuccessful()) {
-            Toast.makeText(this, "made it", Toast.LENGTH_SHORT).show();
             passData(response.body().getAccess_token());
             Intent intent = new Intent(this, RescueeActivity.class);
             intent.putExtra(getString(R.string.email), enterInputView.getText().toString());
             editor.putString(getString(R.string.email), enterInputView.getText().toString());
             editor.apply();
             startActivity(intent);
-        } else {
-            Toast.makeText(this, "Failed to login " + response.code() + " " + response.message(), Toast.LENGTH_SHORT).show();
         }
+        else if (response.code() == 403) {
+            Toast.makeText(this, response.message(), Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Network failure. Please try again", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     @Override
@@ -274,16 +277,14 @@ public class OnboardingActivity extends AppCompatActivity implements Callback<Us
                 @Override
                 public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
                     if (response.isSuccessful()) {
-                        Toast.makeText(OnboardingActivity.this, "Successful register, please log in", Toast.LENGTH_SHORT).show();
-                        setUpForInput(false);
-                    } else {
-                        String msg = "¢∞§¢£";
-                        try {
-                            msg = response.errorBody().string();
-                        } catch (Exception e) {
+                        isSigningUp = false;
+                        startNetworking();
+                    }
 
-                        }
-                        Toast.makeText(OnboardingActivity.this, response.code() + " " + msg, Toast.LENGTH_LONG).show();
+                    if (response.code() == 405) {
+                        Toast.makeText(OnboardingActivity.this, "User already exists, logging in instead", Toast.LENGTH_SHORT).show();
+                        isSigningUp = false;
+                        startNetworking();
                     }
                 }
 

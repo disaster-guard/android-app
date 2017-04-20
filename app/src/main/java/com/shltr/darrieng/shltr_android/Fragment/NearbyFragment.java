@@ -9,12 +9,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -210,16 +208,11 @@ public class NearbyFragment extends Fragment
         if (response.isSuccessful()) {
             personAdapter.addUser(
                 new UserPojo(response.body().getPicture(), response.body().getName()));
-        } else {
-            Toast.makeText(getActivity(), "Less cool partay", Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
     public void onFailure(Call<UserPojo> call, Throwable t) {
-        Toast.makeText(getActivity(), "You failed", Toast.LENGTH_SHORT).show();
-        String stackTrace = Log.getStackTraceString(t);
-        Log.wtf("DGL", stackTrace);
     }
 
     @Override

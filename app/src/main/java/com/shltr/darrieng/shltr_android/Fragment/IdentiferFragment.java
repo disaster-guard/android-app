@@ -176,8 +176,6 @@ public class IdentiferFragment extends Fragment implements Callback<CompleteIden
                 probabilities += "Match: " + match.getName() + ", probability: " + match.getProb() + "\n";
             }
             agglomerateTextView.setText(probabilities);
-        } else {
-            Toast.makeText(getActivity(), response.code() + "", Toast.LENGTH_LONG).show();
         }
     }
 

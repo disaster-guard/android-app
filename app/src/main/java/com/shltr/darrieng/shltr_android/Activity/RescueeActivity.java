@@ -11,7 +11,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -148,7 +147,18 @@ public class RescueeActivity extends AppCompatActivity implements Callback<UserI
             editor.putInt(getString(R.string.id), response.body().getId());
             editor.apply();
         } else {
-            Toast.makeText(this, "Network failure :(", Toast.LENGTH_SHORT).show();
+            // App sometimes initially fails on login. Try second time if it does.
+            Gson gson = new GsonBuilder().create();
+            Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+            Call<UserId> c;
+            IdModel idModel = retrofit.create(IdModel.class);
+            call = idModel.retrieveId(
+                "Bearer " + preferences.getString(getString(R.string.token), null), userEmail);
+            call.enqueue(this);
         }
     }
 
