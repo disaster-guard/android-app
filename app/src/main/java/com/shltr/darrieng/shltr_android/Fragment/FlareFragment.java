@@ -236,6 +236,7 @@ public class FlareFragment extends Fragment
 
     @Override
     public void onResponse(Call<BaseResponse> call, Response<BaseResponse> response) {
+        Toast.makeText(getActivity(), "got a response", Toast.LENGTH_SHORT).show();
         if (response.isSuccessful()) {
             flareLoader.setVisibility(View.GONE);
             flareButton.setVisibility(View.VISIBLE);

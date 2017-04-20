@@ -4,23 +4,23 @@ package com.shltr.darrieng.shltr_android.Pojo;
  * Model containing all information about a user.
  */
 public class CompleteIdentificationModel {
-    private UserModel userModel;
-    private AgeModel ageModel;
+    private UserModel user_model;
+    private AgeModel age_model;
 
-    public UserModel getUserModel() {
-        return userModel;
+    public UserModel getUser_model() {
+        return user_model;
     }
 
-    public void setUserModel(UserModel userModel) {
-        this.userModel = userModel;
+    public void setUser_model(UserModel user_model) {
+        this.user_model = user_model;
     }
 
-    public AgeModel getAgeModel() {
-        return ageModel;
+    public AgeModel getAge_model() {
+        return age_model;
     }
 
-    public void setAgeModel(AgeModel ageModel) {
-        this.ageModel = ageModel;
+    public void setAge_model(AgeModel age_model) {
+        this.age_model = age_model;
     }
 
 }

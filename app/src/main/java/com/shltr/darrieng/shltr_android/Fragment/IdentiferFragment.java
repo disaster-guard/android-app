@@ -19,31 +19,27 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialcamera.MaterialCamera;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.shltr.darrieng.shltr_android.Model.ProductionModel;
+import com.shltr.darrieng.shltr_android.DebugUtils.LogBug;
+import com.shltr.darrieng.shltr_android.Model.UploaderServiceModel;
 import com.shltr.darrieng.shltr_android.Pojo.AgeModel;
 import com.shltr.darrieng.shltr_android.Pojo.CompleteIdentificationModel;
 import com.shltr.darrieng.shltr_android.Pojo.Match;
 import com.shltr.darrieng.shltr_android.R;
-
-import net.gotev.uploadservice.MultipartUploadRequest;
-import net.gotev.uploadservice.UploadNotificationConfig;
 
 import java.io.File;
 import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
@@ -152,32 +148,54 @@ public class IdentiferFragment extends Fragment implements Callback<CompleteIden
                 ivPreview.setImageBitmap(myBitmap);
                 String uploadId = UUID.randomUUID().toString();
 
-                //Creating a multi part request
-                new MultipartUploadRequest(getActivity(), uploadId, BASE_URL + "api/uploadProductionPicture")
-                    .addFileToUpload(filePath, "image") //Adding file
-                    .addParameter("user_id", preferences.getInt(getString(R.string.id), -1) + "")
-                    .addHeader("Authorization", "Bearer " + preferences.getString(getString(R.string.token), null))
-                    .setNotificationConfig(new UploadNotificationConfig())
-                    .setAutoDeleteFilesAfterSuccessfulUpload(true)
-                    .setMaxRetries(2)
-                    .startUpload(); //Starting the upload
+//                //Creating a multi part request
+//                new MultipartUploadRequest(getActivity(), uploadId, BASE_URL + "/api/uploadProductionPicture")
+//                    .addFileToUpload(filePath, "image") //Adding file
+//                    .addParameter("user_id", preferences.getInt(getString(R.string.id), -1) + "")
+//                    .addHeader("Authorization", "Bearer " + preferences.getString(getString(R.string.token), null))
+//                    .setNotificationConfig(new UploadNotificationConfig())
+//                    .setAutoDeleteFilesAfterSuccessfulUpload(true)
+//                    .setMaxRetries(2)
+//                    .startUpload(); //Starting the upload
 
-                android.os.Handler handler = new android.os.Handler();
-                handler.postDelayed(() -> {
-                    Gson gson = new GsonBuilder().create();
-                    Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(BASE_URL)
-                        .addConverterFactory(GsonConverterFactory.create(gson))
-                        .build();
 
-                    ProductionModel productionModel = retrofit.create(ProductionModel.class);
-                    Call<CompleteIdentificationModel> call = productionModel.pilferData(
-                        "Bearer " + preferences.getString(getString(R.string.token), null),
-                        preferences.getInt(getString(R.string.id), -1));
+                UploaderServiceModel service = new Retrofit.Builder().baseUrl(BASE_URL).build().create(UploaderServiceModel.class);
 
+                File file = new File(filePath);
+
+                RequestBody reqFile = RequestBody.create(MediaType.parse("image/*"), file);
+                MultipartBody.Part body = MultipartBody.Part.createFormData("image", file.getName(), reqFile);
+                RequestBody name = RequestBody.create(MediaType.parse("text/plain"), "image");
+
+                retrofit2.Call<okhttp3.ResponseBody> req = service.postImage(body, name);
+                req.enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                        Toast.makeText(getActivity(), LogBug.getRetroCodeMsg(response), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+                        t.printStackTrace();
+                    }
+                });
+
+//                android.os.Handler handler = new android.os.Handler();
+//                handler.postDelayed(() -> {
+//                    Retrofit retrofit = new Retrofit.Builder()
+//                        .baseUrl(BASE_URL)
+//                        .addConverterFactory(GsonConverterFactory.create(gson))
+//                        .build();
+//
+//                    PredictionModel predictionModel = retrofit.create(PredictionModel.class);
+//                    Call<CompleteIdentificationModel> call = predictionModel.pilferData(
+//                        "Bearer " + preferences.getString(getString(R.string.token), null),
+//                        preferences.getInt(getString(R.string.id), -1));
+//
+//                    // TODO xbsywt endpoint polling or real retrofit
 //                    call.enqueue(this);
-                    volleyRequest();
-                }, 2500);
+////                    volleyRequest();
+//                }, 2500);
 
             } catch (Exception exc) {
                 Toast.makeText(getActivity(), exc.getMessage(), Toast.LENGTH_SHORT).show();
@@ -187,38 +205,6 @@ public class IdentiferFragment extends Fragment implements Callback<CompleteIden
         returningWithResult = false;
     }
 
-    /**
-     * Request used to determine if user matches with any other users in remote database.
-     */
-    private void volleyRequest() {
-        RequestQueue queue = Volley.newRequestQueue(getActivity());  // this = context
-        final String url = "http://hack.symerit.com/api/getProductionJson?user_id=" + preferences.getInt(getString(R.string.id), -1);
-
-        // prepare the Request
-        JsonArrayRequest getRequest = new JsonArrayRequest(Request.Method.GET, url, null, response -> {
-            try {
-                String jsonsucks = response.toString();
-                Log.wtf("DGL", jsonsucks);
-                if (jsonsucks.contains("cannot create") || jsonsucks.contains("Traceback")) {
-                    throw new RuntimeException("useless");
-                }
-                String glob = "";
-                String goodGlob = "Similar user:\nName: ";
-                glob += jsonsucks.substring(jsonsucks.indexOf("name") + 10);
-                glob = glob.substring(0, glob.indexOf("\\"));
-                String bettterGlob = "Similar users\n" +"Name: " + glob;
-                agglomerateTextView.setText(bettterGlob);
-            } catch (Exception e) {
-                agglomerateTextView.setText("Unable to determine similar users in our database.");
-            }
-
-
-        }, error -> Log.wtf("DGLDG", error.getCause().toString()));
-
-        queue.add(getRequest);
-
-
-    }
     @Override
     public void onResponse(Call<CompleteIdentificationModel> call, Response<CompleteIdentificationModel> response) {
         if (response.isSuccessful()) {
@@ -233,30 +219,30 @@ public class IdentiferFragment extends Fragment implements Callback<CompleteIden
             boolean dontFailAgeModel = true;
 
             try {
-                response.body().getAgeModel().getStatus();
+                response.body().getAge_model().getStatus();
             } catch (Exception e) {
                 dontFailUserModel = false;
                 Log.wtf("DGL", "Age status doesn't exist");
             }
 
             try {
-                response.body().getUserModel().getStatus();
+                response.body().getUser_model().getStatus();
             } catch (Exception e) {
                 dontFailAgeModel = false;
                 Log.wtf("DGL", "User status doesn't exist");
             }
 
-            if (dontFailUserModel && response.body().getUserModel().getStatus().equals("Good")) {
-                if (response.body().getUserModel().getMatches().size() == 0 && response.body().getAgeModel().getStatus().equals("Good")) {
+            if (dontFailUserModel && response.body().getUser_model().getStatus().equals("Good")) {
+                if (response.body().getUser_model().getMatches().size() == 0 && response.body().getAge_model().getStatus().equals("Good")) {
                     String ageText = "";
-                    AgeModel am = response.body().getAgeModel();
+                    AgeModel am = response.body().getAge_model();
                     ageText += "Gender: " + am.getGender() + "\n";
                     ageText += "Age: " + am.getAge() + "\n";
                     ageText += "Ethnicity: " + am.getAge() + "\n";
                     agglomerateTextView.setText(ageText);
                 } else if (dontFailAgeModel) {
                     String userText = "Possible matches: \n";
-                    for (Match match: response.body().getUserModel().getMatches()) {
+                    for (Match match: response.body().getUser_model().getMatches()) {
                         userText += "\tName: " + match.getName() + " | Probability: " + match.getProb();
                     }
                     agglomerateTextView.setText(userText);

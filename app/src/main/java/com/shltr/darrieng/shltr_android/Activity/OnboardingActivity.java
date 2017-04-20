@@ -39,7 +39,7 @@ import static android.view.View.GONE;
  */
 public class OnboardingActivity extends AppCompatActivity implements Callback<UserToken> {
 
-    public static final String BASE_URL = "http://52.55.141.18";
+    public static final String BASE_URL = "http://34.204.73.163/";
 
     /**
      * Button used start sign up process.
